@@ -1,6 +1,6 @@
 # Launch
 
-A simple mechanism for deploying and running scripts or executables onto remote hosts.
+A simple mechanism for deploying and running scripts or executables on remote hosts.
 
 Launch is developed in Go so is able to use concurrency to run things simultaneously where appropriate.
 
