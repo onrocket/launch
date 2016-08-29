@@ -2,7 +2,8 @@ package main
 
 import (
 	"fmt"
-	"launch/config"
+
+	"github.com/onrocket/launch/config"
 )
 
 func main() {
