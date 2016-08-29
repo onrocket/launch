@@ -50,12 +50,12 @@ would in order check disk, memory and then CPU
 ### Command pre test
 
 A command that has a test associated will run the test prior to running the 
-command itslef, so a command named `03_install_webservice_test` would be run 
-before 03_install_webservice and if the test command returns an exit code of 0
-03_install_webservice will not be run.
+command itself, so a command named `03_install_webservice_test` would be run 
+before `03_install_webservice` and if the test command returns an exit code of 0
+`03_install_webservice` will not be run.
 
 This way, commands to 'enforce' the installation of packages for instance will
-only be executed if the '_test' command of a given command sequence returns a 
-true value of 1 or more.
+only be executed if the `_test`' command of a given command sequence returns a 
+non zero value.
 
 
