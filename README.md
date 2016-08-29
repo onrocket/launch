@@ -10,3 +10,5 @@ A message queue is used to communicate instructions and recieve status updates t
 
 ## Launchd
 
+The launch daemon or program
+
