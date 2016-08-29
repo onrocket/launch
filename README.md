@@ -4,19 +4,23 @@ this is prototype only, at present there is no published working code (yet)
 
 Code Branches will be used to implement each 'stage' of deployment.
 
-There are no stages yet but the first branch will be 'launch_config'
+There are no stages yet but the first branch will be `launch_config`
 
 As each stage (branch) is complete it will be merged into 'master' 
 
 # Launch
 
-A simple mechanism for deploying and running scripts or executables on remote hosts.
+A simple mechanism for deploying and running scripts or executables on remote 
+hosts.
 
-Launch is developed in Go so is able to use concurrency to run things simultaneously where appropriate.
+Launch is developed in Go so is able to use concurrency to run things 
+simultaneously where appropriate.
 
-Each instance of Launch will take on the role of an agent when started as a daemon, else will be used to interact with one or more remote instances.
+Each instance of Launch will take on the role of an agent when started as a 
+daemon, else will be used to interact with one or more remote instances.
 
-A message queue is used to communicate instructions and recieve status updates to and from each of the Launch daemons.
+A message queue is used to communicate instructions and recieve status updates 
+to and from each of the Launch daemons.
 
 ## Launcher
 
@@ -24,7 +28,7 @@ The launch daemon or program
 
 ### Launch Sequence
 
-A set of commands make up a launch sequence. Some may be run concurrently,,
+A set of commands make up a launch sequence. Some may be run concurrently,
 others in a given order.
 
 Commands are any executable or script that is compatible with the target server.
