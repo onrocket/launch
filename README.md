@@ -22,9 +22,12 @@ A message queue is used to communicate instructions and recieve status updates t
 
 The launch daemon or program
 
-### Sequence
+### Launch Sequence
 
-A sequence of commands that make up a launch pattern
+A set of commands make up a launch sequence. Some may be run concurrently,,
+others in a given order.
+
+Commands are any executable or script that is compatible with the target server.
 
 ### Configuration
 
@@ -32,9 +35,6 @@ A launch configuration containing all information necessary to populate a set
 of launch commands in a launch sequence
 
 ### Command Sequencing
-
-A launch command can be any command that is implemented as either an executable
-script or binary that is compatible with the target operating system
 
 Launch commands may be preceded with a series of digits from 0..N where the 
 lowest number is executed first and each in turn in ascending order there after.
