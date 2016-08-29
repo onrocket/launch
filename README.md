@@ -1,3 +1,13 @@
+# Status
+
+this is prototype only, at present there is no published working code (yet)
+
+Code Branches will be used to implement each 'stage' of deployment.
+
+There are no stages yet but the first branch will be 'launch_config'
+
+As each stage (branch) is complete it will be merged into 'master' 
+
 # Launch
 
 A simple mechanism for deploying and running scripts or executables on remote hosts.
