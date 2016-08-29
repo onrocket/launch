@@ -8,7 +8,6 @@ import (
 )
 
 func main() {
-	fmt.Printf("Move along please, nothing to see here ...\n")
 	config.LoadConfig()
 	binfiles.LoadBinFiles()
 }
