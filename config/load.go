@@ -5,5 +5,5 @@ import (
 )
 
 func LoadConfig() {
-	fmt.Println("still nothing to see here, move along ...")
+	fmt.Println("definitely nothing to see here, move along ...")
 }
