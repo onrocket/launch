@@ -29,7 +29,7 @@ others in a given order.
 
 Commands are any executable or script that is compatible with the target server.
 
-### Configuration
+### Launch Configuration
 
 A launch configuration containing all information necessary to populate a set 
 of launch commands in a launch sequence
