@@ -8,4 +8,5 @@ Each instance of Launch will take on the role of an agent when started as a daem
 
 A message queue is used to communicate instructions and recieve status updates to and from each of the Launch daemons.
 
+## Launch
 
