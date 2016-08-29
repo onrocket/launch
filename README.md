@@ -28,7 +28,7 @@ A sequence of commands that make up a launch pattern
 
 ### Configuration
 
-A launch congiguration containing all information necessary to populate a set 
+A launch configuration containing all information necessary to populate a set 
 of launch commands in a launch sequence
 
 ### Command Sequencing
@@ -55,7 +55,7 @@ before `03_install_webservice` and if the test command returns an exit code of 0
 `03_install_webservice` will not be run.
 
 This way, commands to 'enforce' the installation of packages for instance will
-only be executed if the `_test`' command of a given command sequence returns a 
+only be executed if the `_test` command of a given command sequence returns a 
 non zero value.
 
 
