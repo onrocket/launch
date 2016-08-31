@@ -16,17 +16,16 @@ func printError(err error) {
 	}
 }
 
-func printOutput(outs []byte) {
+func printOutput(outs []byte) (ftype string) {
 	if len(outs) > 0 {
-		fmt.Printf("==> Output: %s", string(outs))
 		switch {
 		case strings.Contains(string(outs), "text"):
-			fmt.Println("TXT")
+			ftype = "TXT"
 		case strings.Contains(string(outs), "executable"):
-			fmt.Println("EXE")
+			ftype = "EXT"
 		}
-		fmt.Printf("\n")
 	}
+	return
 }
 
 // LoadConfig is currently called by main but will be moved back to this module
@@ -36,14 +35,12 @@ func LoadConfig() {
 	if err != nil {
 		log.Fatal(err)
 	}
-	fmt.Println(usr.HomeDir)
+	//fmt.Println(usr.HomeDir)
 
 	// TODO : create and populate onrocket launch directory if not already there
 	//        and optionaly accept an alternative directory if specified as a
 	//        command line parameter
 	searchDir := usr.HomeDir + "/.onrocket/launch"
-
-	fmt.Println("+++++=STILL definitely nothing to see here, move along ...")
 
 	fileList := []string{}
 	err = filepath.Walk(searchDir, func(path string, f os.FileInfo, err error) error {
@@ -57,16 +54,18 @@ func LoadConfig() {
 
 	for _, file := range fileList {
 		choppedFile := strings.Replace(file, searchDir, "", -1)
-		fmt.Printf(">>>>>[%s][%s]\n", file, choppedFile)
 
 		// Create an *exec.Cmd
 		cmd := exec.Command("file", "-b", file)
 
 		// Combine stdout and stderr
-		//printCommand(cmd)
 		output, err := cmd.CombinedOutput()
 		printError(err)
-		printOutput(output)
+		ftype := printOutput(output)
+		if ftype == "TXT" {
+			fmt.Printf("got ftype [%s] back from printOutput\n", ftype)
+			fmt.Printf("\t     file[%s]\n\tetcd path[%s]\n\n", file, choppedFile)
+		}
 
 	}
 
