@@ -1,8 +1,6 @@
 package main
 
 import (
-	"fmt"
-
 	"github.com/onrocket/launch/binfiles"
 	"github.com/onrocket/launch/config"
 )
