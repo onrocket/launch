@@ -1,12 +1,19 @@
 package config
 
 import (
+	"encoding/csv"
 	"fmt"
+	"io"
+	"io/ioutil"
 	"os"
 	"os/exec"
 	"os/user"
 	"path/filepath"
 	"strings"
+	"time"
+
+	"github.com/coreos/etcd/client"
+	"golang.org/x/net/context"
 )
 
 func exitIfError(err error, reason string) {
@@ -71,16 +78,49 @@ func uploadFileOrConfig(file, searchDir string) {
 	if (ext == ".csv") || ext == ".CSV" {
 		parseUploadCSVData(file, searchDir)
 	} else {
-		uploadFileData(file, searchDir)
+		uploadFileData(file, choppedFile)
 	}
 }
 
 func parseUploadCSVData(file, searchDir string) {
 	fmt.Printf("about to upload CSV\n\n")
+	csvText, err := ioutil.ReadFile(file)
+	exitIfError(err, "trying to open file")
+	r := csv.NewReader(strings.NewReader(string(csvText)))
+	for {
+		record, err := r.Read()
+		if err == io.EOF {
+			break
+		}
+		if err != nil {
+			exitIfError(err, "csv parsing error")
+		}
+		for value := range record {
+			fmt.Printf("[%v]", record[value])
+		}
+		fmt.Printf("\n")
+	}
 }
 
-func uploadFileData(file, searchDir string) {
+func uploadFileData(file, choppedFile string) {
 	fmt.Printf("about to upload text file complete\n\n")
+	plainText, err := ioutil.ReadFile(file)
+	exitIfError(err, "trying to open file")
+	//fmt.Printf("here is the file we're uploading :\n\n%s\n", plainText)
+	//TODO :: establish settings for location of etcd - not just hard coded
+	//        to localhost
+	cfg := client.Config{
+		Endpoints: []string{"http://127.0.0.1:2379"},
+		Transport: client.DefaultTransport,
+		// set timeout per request to fail fast when the target
+		// endpoint is unavailable - TODO : make this configurable
+		HeaderTimeoutPerRequest: time.Second,
+	}
+	c, err := client.New(cfg)
+	exitIfError(err, "configuring etcd")
+	kapi := client.NewKeysAPI(c)
+	_, err = kapi.Set(context.Background(), choppedFile, string(plainText), nil)
+	exitIfError(err, fmt.Sprintf("trying to upload [%s] to etcd", file))
 }
 
 // LoadConfig is currently called by main but will be moved back to this module
