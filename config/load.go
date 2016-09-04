@@ -76,14 +76,15 @@ func uploadFileOrConfig(file, searchDir string) {
 	fmt.Printf("\tetcd path[%s]\n", choppedFile)
 	fmt.Printf("\t      ext[%s]\n\n", ext)
 	if (ext == ".csv") || ext == ".CSV" {
-		parseUploadCSVData(file, searchDir)
+		parseUploadCSVData(file, searchDir, choppedFile)
 	} else {
 		uploadFileData(file, choppedFile)
 	}
 }
 
-func parseUploadCSVData(file, searchDir string) {
-	fmt.Printf("about to upload CSV\n\n")
+func parseUploadCSVData(file, searchDir, choppedFile string) {
+	baseKeyAddr := strings.Replace(choppedFile, ".csv", "", -1)
+	fmt.Printf("about to upload CSV [%s]\n\n", baseKeyAddr)
 	csvText, err := ioutil.ReadFile(file)
 	exitIfError(err, "trying to open file")
 	r := csv.NewReader(strings.NewReader(string(csvText)))
@@ -95,10 +96,9 @@ func parseUploadCSVData(file, searchDir string) {
 		if err != nil {
 			exitIfError(err, "csv parsing error")
 		}
-		for value := range record {
-			fmt.Printf("[%v]", record[value])
-		}
-		fmt.Printf("\n")
+		etcdPath := fmt.Sprintf("%s/%s", baseKeyAddr, record[0])
+		fmt.Printf("record :: [%s]=>[%s]\n", etcdPath, record[1])
+		uploadToEtcd(etcdPath, []byte(record[1]))
 	}
 }
 
@@ -106,7 +106,10 @@ func uploadFileData(file, choppedFile string) {
 	fmt.Printf("about to upload text file complete\n\n")
 	plainText, err := ioutil.ReadFile(file)
 	exitIfError(err, "trying to open file")
-	//fmt.Printf("here is the file we're uploading :\n\n%s\n", plainText)
+	uploadToEtcd(choppedFile, plainText)
+}
+
+func uploadToEtcd(key string, val []byte) {
 	//TODO :: establish settings for location of etcd - not just hard coded
 	//        to localhost
 	cfg := client.Config{
@@ -119,17 +122,13 @@ func uploadFileData(file, choppedFile string) {
 	c, err := client.New(cfg)
 	exitIfError(err, "configuring etcd")
 	kapi := client.NewKeysAPI(c)
-	_, err = kapi.Set(context.Background(), choppedFile, string(plainText), nil)
-	exitIfError(err, fmt.Sprintf("trying to upload [%s] to etcd", file))
+	_, err = kapi.Set(context.Background(), key, string(val), nil)
+	exitIfError(err, fmt.Sprintf("trying to upload key [%s] to val [%s] etcd", key, val))
 }
 
 // LoadConfig is currently called by main but will be moved back to this module
 func LoadConfig() {
-
 	searchDir := launchConfigPath()
-
 	fileList := launchConfigFiles(searchDir)
-
 	findConfigs(fileList, searchDir)
-
 }
