@@ -35,14 +35,14 @@ func parseFileCmdOutput(outs []byte) (fType string) {
 	return
 }
 
-func launchConfigPath() string {
+func LaunchConfigPath() string {
 
 	usr, err := user.Current()
 	exitIfError(err, "trying to get current user")
 	// TODO : create and populate onrocket launch directory if not already there
 	//        and optionaly accept an alternative directory if specified as a
 	//        command line parameter
-	searchDir := usr.HomeDir + "/.onrocket/launch"
+	searchDir := usr.HomeDir + "/.onrocket/Launch"
 	return searchDir
 
 }
@@ -128,7 +128,7 @@ func uploadToEtcd(key string, val []byte) {
 
 // LoadConfig is currently called by main but will be moved back to this module
 func LoadConfig() {
-	searchDir := launchConfigPath()
+	searchDir := LaunchConfigPath()
 	fileList := launchConfigFiles(searchDir)
 	findConfigs(fileList, searchDir)
 }
