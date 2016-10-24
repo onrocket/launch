@@ -267,6 +267,8 @@ func runJobRequest(body []byte) {
 	fmt.Printf(" hostname : %s\n", hostName)
 
 	scriptDir := scriptDirectory(hostName, res.ID)
+	scriptToRun := scriptDir + "/" + res.Job
 	fmt.Printf("scriptDir:[%s]\n", scriptDir)
+	fmt.Printf("to run:[%s]\n", scriptToRun)
 
 }
