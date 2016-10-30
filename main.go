@@ -1,15 +1,34 @@
 package main
 
 import (
+	"flag"
+	"fmt"
+	"log"
+	"os"
+
 	"github.com/onrocket/launch/binfiles"
 	"github.com/onrocket/launch/config"
 	"github.com/onrocket/launch/get"
-
-	"flag"
-	"fmt"
 )
 
 func main() {
+
+	var hostName string
+	envHost, isSet := os.LookupEnv("HOST")
+	var err error
+	if isSet {
+		hostName = envHost
+	} else {
+		hostName, err = os.Hostname()
+		if err != nil {
+			log.Fatal(err)
+		}
+	}
+	var serviceName = "WBcMTtwPdXC435m42"
+	envServiceName, isSet := os.LookupEnv("SERVICE_NAME")
+	if isSet {
+		serviceName = envServiceName
+	}
 
 	binfilesPtr := flag.Bool("binfiles", false, "load binfiles - not implemented yet")
 	getPtr := flag.Bool("get", false, "get config from etcd")
@@ -17,13 +36,12 @@ func main() {
 	loadPtr := flag.Bool("load", false, "load config to etcd")
 	runPtr := flag.Bool("run", false, "get and run config from etcd")
 
-	nodeNamePtr := flag.String("nodeName", "ajbc.co", "name of node")
-	serviceNamePtr := flag.String("serviceName", "WBcMTtwPdXC435m42", "name of service")
+	nodeNamePtr := flag.String("nodeName", hostName, "name of node")
 
 	flag.Parse()
 
 	fmt.Println("   node : ", *nodeNamePtr)
-	fmt.Println("service : ", *serviceNamePtr)
+	fmt.Println("service : ", serviceName)
 	d := new(get.OnRocket)
 	switch {
 	case *binfilesPtr:
@@ -31,7 +49,7 @@ func main() {
 		binfiles.LoadBinFiles()
 	case *getPtr:
 		fmt.Println("getting config ... ")
-		d.DownloadConfig(*nodeNamePtr, *serviceNamePtr)
+		d.DownloadConfig(*nodeNamePtr, serviceName)
 	case *listenPtr:
 		fmt.Println("listening for jobs from beanstalkd ...")
 		d.LentilListener()
@@ -40,7 +58,6 @@ func main() {
 		config.LoadConfig()
 	case *runPtr:
 		fmt.Println("getting and running config ... ")
-		d.DownloadConfig(*nodeNamePtr, *serviceNamePtr)
+		d.DownloadConfig(*nodeNamePtr, serviceName)
 	}
-
 }
