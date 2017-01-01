@@ -32,7 +32,8 @@ func main() {
 
 	binfilesPtr := flag.Bool("binfiles", false, "load binfiles - not implemented yet")
 	getPtr := flag.Bool("get", false, "get config from etcd")
-	listenPtr := flag.Bool("listen", false, "listen for jobs from beanstalkd")
+	listenJobPtr := flag.Bool("listen-job", false, "listen for jobs from beanstalkd")
+	listenLogPtr := flag.Bool("listen-log", false, "listen for logs of jobs from beanstalkd")
 	loadPtr := flag.Bool("load", false, "load config to etcd")
 	runPtr := flag.Bool("run", false, "get and run config from etcd")
 
@@ -50,9 +51,12 @@ func main() {
 	case *getPtr:
 		fmt.Println("getting config ... ")
 		d.DownloadConfig(*nodeNamePtr, serviceName)
-	case *listenPtr:
+	case *listenJobPtr:
 		fmt.Println("listening for jobs from beanstalkd ...")
-		d.LentilListener()
+		d.LentilJobListener()
+	case *listenLogPtr:
+		fmt.Println("listening for logs of jobs from beanstalkd ...")
+		d.LentilLogListener()
 	case *loadPtr:
 		fmt.Println("loading config ...")
 		config.LoadConfig()
