@@ -450,18 +450,10 @@ func (rkt *OnRocket) runJobRequest(body []byte) {
 			secs := now.Unix()
 			secint := int(secs)
 
-			// Optional. Switch the session to a monotonic behavior.
-			//session.SetMode(mgo.Monotonic, true)
-			//c := session.DB("myapp").C("joblog")
 			logText := fmt.Sprintf("%s", scanner.Text())
 			checkSubStr := "[METEOR]"
 			if strings.Contains(logText, checkSubStr) {
 				newLogText := strings.Replace(logText, "[METEOR]", "", -1)
-				//newLogText := logText
-				//err = c.Insert(&JobLog{EpochTime: secint, User: userID, JobName: "siteCopy", JobStatus: newLogText})
-				//if err != nil {
-				//	log.Fatal(err)
-				//}
 				rkt.LentilLogger(secint, userID, "siteCopy", newLogText)
 				fmt.Printf("[%d][%s], %s [%s]\n", secint, userID, "siteCopy", newLogText)
 			}
