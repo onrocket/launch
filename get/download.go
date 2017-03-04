@@ -20,7 +20,6 @@ import (
 	"github.com/nutrun/lentil"
 	"github.com/onrocket/launch/config"
 	"golang.org/x/net/context"
-	"gopkg.in/mgo.v2"
 )
 
 var (
@@ -84,15 +83,6 @@ func (rkt *OnRocket) DownloadConfig(nodeName, serviceName string) {
 
 	fullPath := "/DC1/Config/host/" + nodeName + "/" + serviceName + "/template-variables"
 	rkt.downloadConfigFromPath(fullPath, "template_variables")
-
-	fullPath = "/DC1/Config/host/" + nodeName + "/" + serviceName + "/variables"
-	rkt.downloadConfigFromPath(fullPath, "variables")
-
-	fullPath = "/DC1/Sequence/Hosts/" + nodeName
-	rkt.downloadConfigFromPath(fullPath, "script_tags")
-
-	fullPath = "/DC1/Sequence/Scripts"
-	rkt.downloadConfigFromPath(fullPath, "scripts")
 
 	fullPath = "/DC1/Sequence/Templates"
 	rkt.downloadConfigFromPath(fullPath, "templates")
@@ -243,6 +233,8 @@ func (rkt *OnRocket) LentilLogger(secint int, userID, jobName, jobText string) {
 		JobName:   jobName,
 		JobStatus: jobText,
 	}
+	fmt.Printf(">>>HERE\n\n")
+
 	l, err := json.Marshal(mylog)
 	if err != nil {
 		log.Fatalf("json marshal failed with [%s]\n", err)
@@ -262,8 +254,6 @@ func (rkt *OnRocket) LentilLogger(secint int, userID, jobName, jobText string) {
 		log.Fatal(err)
 	}
 	log.Printf("INSERTED JOB ID: %d\n", jobId)
-
-	log.Printf("BOOM [%d][%s][%s][%s]\n>>>%s\n\n", secint, userID, jobName, jobText, ls)
 }
 
 func (rkt *OnRocket) LentilLogListener() {
@@ -373,8 +363,9 @@ func (rkt *OnRocket) LentilJobListener() {
 		e = bean.Delete(job.Id)
 		if e != nil {
 			log.Fatalf("error deleteing from beanstalk : %s", e)
+		} else {
+			log.Printf("deleted job id [%v] from beanstalk ok\n", job.Id)
 		}
-		fmt.Println(">>>> deleted a beanstalkd queue entry")
 		time.Sleep(100 * time.Millisecond)
 	}
 }
@@ -425,8 +416,7 @@ func (rkt *OnRocket) runJobRequest(body []byte) {
 	scriptDir := scriptDirectory(hostName, res.ID)
 	scriptToRun := scriptDir + "/" + res.Job
 	fmt.Printf("scriptDir:[%s]\n", scriptDir)
-	fmt.Printf("to run:[%s]\n", scriptToRun)
-
+	fmt.Printf(">>> to run:[%s]\n", scriptToRun)
 	cmdArgs := []string{""}
 
 	cmd := exec.Command(scriptToRun, cmdArgs...)
@@ -437,11 +427,13 @@ func (rkt *OnRocket) runJobRequest(body []byte) {
 	}
 
 	scanner := bufio.NewScanner(cmdReader)
-	session, err := mgo.Dial("localhost")
-	if err != nil {
-		panic(err)
-	}
-	defer session.Close()
+	/*
+		session, err := mgo.Dial("localhost")
+		if err != nil {
+			log.Fatalf("DIE DIE DIE : %s\n", err)
+		}
+		defer session.Close()
+	*/
 	go func(userID string) {
 		for scanner.Scan() {
 			fmt.Printf("stdout > [%s]\n", scanner.Text())
