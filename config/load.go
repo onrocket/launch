@@ -70,9 +70,7 @@ func findConfigs(fileList []string, searchDir string) {
 		fileCmdOutput, err := fileCmd.CombinedOutput()
 		exitIfError(err, "running file command through exec")
 		fType := parseFileCmdOutput(fileCmdOutput)
-		fmt.Printf(">>DEBUG>>file[%s]\n", file)
 		if fType == "TXT" {
-			fmt.Printf(">>DEBUG>>-----> [%s]\n", file)
 			uploadFileOrConfig(file, searchDir)
 		}
 	}
@@ -139,9 +137,5 @@ func uploadToEtcd(key string, val []byte) {
 func LoadConfig() {
 	searchDir := LaunchConfigPath()
 	fileList := launchConfigFiles(searchDir)
-	fmt.Printf(">>>DEBUG>>> fileList [%s]\n", fileList)
-	for _, f := range fileList {
-		fmt.Printf(">>>[%s]\n", f)
-	}
 	findConfigs(fileList, searchDir)
 }
